@@ -35,11 +35,7 @@ ENV GITHUB_TOOLSETS="all" \
     GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
 
 # Expose port for AgentCore
-EXPOSE 8000
-
-# Health check endpoint
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+EXPOSE 8080
 
 # Start the GitHub MCP server
 CMD ["uv", "run", "python", "server.py"]
