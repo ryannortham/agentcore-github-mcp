@@ -6,12 +6,17 @@ Enables AWS Bedrock agents to access GitHub repositories, issues, PRs, and code 
 
 ## Quick Start
 
-### 1. Set GitHub PAT:
+### Setup venv
+```bash
+source .venv/bin/activate
+```  
+
+### Setup GitHub Auth
 ```bash
 export GITHUB_PERSONAL_ACCESS_TOKEN=github_pat_XXXXX
 ```
 
-### 2. Setup AWS Bedrock AgentCore
+### Setup AWS Bedrock AgentCore
 
 Configure AWS credentials:
 ```bash
@@ -72,8 +77,7 @@ Connection Settings:
 
 ## Deploy to AWS
 ```bash
-agentcore launch \
-  --env GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN \
+agentcore launch --env GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN
 ```
 
 ## Environment Variables
