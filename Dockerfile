@@ -1,41 +1,26 @@
-# Multi-stage build for GitHub MCP server on AgentCore Runtime
-FROM ghcr.io/github/github-mcp-server:latest AS github-mcp-server
+FROM python:3.11-alpine
 
-# Python environment stage
-FROM python:3.11-slim
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install uv for fast Python package management
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/github/github-mcp-server:latest /server/github-mcp-server /usr/local/bin/github-mcp-server
 
-# Copy GitHub MCP server binary from first stage
-COPY --from=github-mcp-server /server/github-mcp-server /usr/local/bin/github-mcp-server
-
-# Set working directory
 WORKDIR /app
 
-# Copy Python project files
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock server.py ./
+RUN uv sync --frozen --no-dev \
+    && uv cache clean \
+    && find /app -name "*.pyc" -delete \
+    && find /app -name "__pycache__" -type d -exec rm -rf {} + || true
 
-# Install Python dependencies
-RUN uv sync --frozen --no-dev
-
-# Copy server code
-COPY server.py ./
-
-# Set environment variables for GitHub MCP server
 ARG GITHUB_PERSONAL_ACCESS_TOKEN
 ENV GITHUB_TOOLSETS="all" \
     GITHUB_DYNAMIC_TOOLSETS=1 \
     GITHUB_READ_ONLY=1 \
     GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
 
-# Expose port for AgentCore
+RUN adduser -D -s /bin/false appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
 EXPOSE 8080
 
-# Start the GitHub MCP server
 CMD ["uv", "run", "python", "server.py"]
