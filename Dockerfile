@@ -1,6 +1,5 @@
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY --from=ghcr.io/github/github-mcp-server:latest /server/github-mcp-server /usr/local/bin/github-mcp-server
 
 WORKDIR /app
@@ -24,4 +23,9 @@ USER appuser
 
 EXPOSE 8080 8000
 
-CMD ["uv", "run", "opentelemetry-instrument", "python", "-m", "server"]
+# Use shell form to allow conditional OpenTelemetry
+CMD if [ "${ENABLE_OTEL:-true}" = "true" ]; then \
+        uv run opentelemetry-instrument python -m github_mcp_agentcore; \
+    else \
+        uv run python -m github_mcp_agentcore; \
+    fi

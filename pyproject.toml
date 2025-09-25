@@ -10,3 +10,7 @@ dependencies = [
     "uvicorn",
     "aws-opentelemetry-distro",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
