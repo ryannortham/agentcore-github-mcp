@@ -12,6 +12,8 @@ RUN uv sync --frozen --no-dev \
     && find /app -name "__pycache__" -type d -exec rm -rf {} + || true
 
 ARG GITHUB_PERSONAL_ACCESS_TOKEN
+
+# See https://github.com/github/github-mcp-server/blob/main/README.md for env options
 ENV GITHUB_TOOLSETS="all" \
     GITHUB_DYNAMIC_TOOLSETS=1 \
     GITHUB_READ_ONLY=1 \
