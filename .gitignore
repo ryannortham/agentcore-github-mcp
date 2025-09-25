@@ -1,0 +1,42 @@
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Python cache
+__pycache__/
+__pycache__*
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+.env
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage*
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+
+# Development
+*.log
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Bedrock AgentCore config
+.bedrock_agentcore.yaml
