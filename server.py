@@ -218,6 +218,32 @@ async def enable_toolset(toolset: str, timeout_seconds: int = 30) -> Dict[str, A
     return await _call_github_tool("enable_toolset", {"toolset": toolset}, timeout_seconds)
 
 
+@mcp.tool()
+async def call_github_tool(tool_name: str, arguments: dict | None = None, timeout_seconds: int = 30) -> Dict[str, Any]:
+    """Execute any GitHub MCP tool by name with the provided arguments.
+    
+    This is the main interface for calling GitHub tools once you've enabled the appropriate toolsets.
+    Use list_available_toolsets and get_toolset_tools first to discover what tools are available.
+    
+    Args:
+        tool_name: The name of the GitHub tool to call (e.g., "get_repository", "create_issue", etc.)
+        arguments: Dictionary of arguments to pass to the tool (tool-specific)
+        timeout_seconds: How long to wait for the tool to complete
+    """
+    if arguments is None:
+        arguments = {}
+    return await _call_github_tool(tool_name, arguments, timeout_seconds)
+
+
+@mcp.tool()
+async def list_enabled_tools(timeout_seconds: int = 30) -> Dict[str, Any]:
+    """List all currently enabled/available GitHub tools that can be called.
+    
+    This shows you the actual tools you can call with call_github_tool, not just the toolsets.
+    """
+    return await proxy.call("tools/list", {}, timeout=float(timeout_seconds), auto_init=True)
+
+
 if __name__ == "__main__":
     # Expose via streamable-http so AgentCore runtime can connect.
     mcp.run(transport="streamable-http")
